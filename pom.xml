@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.ibm.optim.oaas.samples</groupId>
+	<artifactId>cplex-java-worker</artifactId>
+	<version>1.0.0</version>
+
+	<name>cplex-java-worker</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+	    <api.version>1.0.0</api.version>
+		<cplex_version>20.1</cplex_version>
+		<cplex_library_path>CPLEX_LIBRARY_PATH</cplex_library_path>
+		<do-maven-repo-url>https://raw.github.com/IBMDecisionOptimization/do-maven-repo/master</do-maven-repo-url>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>do-maven-repo</id>
+			<url>${do-maven-repo-url}</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.9.0</version>
+		</dependency> 
+		<dependency>
+			<groupId>com.ibm.analytics.optim</groupId>
+			<artifactId>api_java_client</artifactId>
+			<version>${api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<!-- to install cplex-jar in maven local repository: mvn install:install-file 
+				"-Dfile=%CPLEX_STUDIO_DIR%\cplex\lib\cplex.jar" -DgroupId=com.ibm.ilog.optim 
+				-DartifactId=cplex-jar -Dversion=20.1 -Dpackaging=jar -->
+			<groupId>com.ibm.ilog.optim</groupId>
+			<artifactId>cplex-jar</artifactId>
+			<version>${cplex_version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<!-- to install cpo-jar in maven local repository: mvn install:install-file 
+				"-Dfile=%CPLEX_STUDIO_DIR%\cpoptimizer\lib\ILOG.CP.jar" -DgroupId=com.ibm.ilog.optim 
+				-DartifactId=cpo-jar -Dversion=20.1 -Dpackaging=jar -->
+			<groupId>com.ibm.ilog.optim</groupId>
+			<artifactId>cpo-jar</artifactId>
+			<version>${cplex_version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+    		<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-surefire-plugin</artifactId>
+  				<version>2.22.2</version>
+      		<configuration>
+        			<argLine>-Djava.library.path=${cplex_library_path}</argLine>
+        		</configuration>
+    		</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>deploy-model-test</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<workingDirectory>src/python</workingDirectory>
+							<executable>python</executable>
+							<arguments>
+								<argument>deploy.py</argument>
+								<argument>-l</argument>
+								<argument>${wml_location}</argument>
+								<argument>-k</argument>
+								<argument>${wml_api_key}</argument>
+								<argument>-s</argument>
+								<argument>${wml_space_id}</argument>
+								<argument>-n</argument>
+								<argument>${project.artifactId}</argument>
+								<argument>-f</argument>
+								<argument>${project.build.directory}/${project.artifactId}-model.tar.gz</argument>
+								<argument>-c</argument>
+								<argument>${project.basedir}/wml_deployments.ini</argument>
+								<argument>-b</argument>
+								<argument>${beta_feature_key}</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>verify-model-test MixBlendWorker</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<workingDirectory>src/test/python</workingDirectory>
+							<executable>python</executable>
+							<arguments>
+								<argument>verify.py</argument>
+								<argument>-k</argument>
+								<argument>${wml_api_key}</argument>
+								<argument>-n</argument>
+								<argument>${project.artifactId}</argument>
+								<argument>-c</argument>
+								<argument>${project.basedir}/wml_deployments.ini</argument>
+								<argument>-w</argument>
+								<argument>com.ibm.optim.oaas.samples.cplex.worker.MixBlendWorker</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.3.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/assembly/model.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>wml_test_environment</id>
+			<properties>
+				<wml_location>MY_WML_ENVIRONMENT</wml_location>
+				<wml_api_key>MY_APY_KEY</wml_api_key>
+				<beta_feature_key>BETA_FEATURE_KEY</beta_feature_key>
+				<wml_space_id>MY_SPACE_ID</wml_space_id>
+				<wml_deployment_size>S</wml_deployment_size>
+			</properties>
+		</profile>
+	</profiles>
+</project>

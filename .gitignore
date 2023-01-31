@@ -1,0 +1,10 @@
+/.apt_generated/
+/.settings/
+/target/
+**/.DS_Store
+/bin/
+/test-output/
+/.apt_generated_tests/
+.classpath
+.factorypath
+.project
