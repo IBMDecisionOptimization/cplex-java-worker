@@ -37,7 +37,7 @@ If you want to verify the deployment to a WML cluster, you must specify the WML 
 				<!-- BETA_FEATURE_KEY is provided to customers enrolled in beta program -->
 				<wml_api_key>BETA_FEATURE_KEY</wml_api_key>
 
-				<wml_space_id>4b3b6139-5827-490a-a205-c8097c5916f2</wml_space_id>
+				<wml_space_id>XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX</wml_space_id>
 				<wml_deployment_size>S</wml_deployment_size>
 			</properties>
 		</profile>
