@@ -2,7 +2,8 @@
 
 This project demonstrates the development, testing, deployment and verification of a Decision Optimization Java worker in Watson Machine Learning in the following products:
 * Cloud Pak for Data as a Service,
-* Watsonx.ai
+* Watsonx.ai,
+* Cloud Pak for Data 4.8.x or later.
 
 ## 1. Install the development environment:
   - [Install JAVA 11 JDK](https://developer.ibm.com/languages/java/semeru-runtimes/downloads).
@@ -33,15 +34,26 @@ If you want to verify the deployment to a Watson Machine Learning cluster, you m
 			<id>wml_test_environment_cloud</id>
 			<!-- https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-authentication.html?context=cpdaas -->
 			<properties>
-				<wml_location>us-south.ml.cloud.ibm.com</wml_location>
+				<wml_location>CLOUD_WML_CLUSTER</wml_location>
 				<wml_api_key>MY_APY_KEY</wml_api_key>
-				<wml_space_id>c1d336af-1573-49a7-b599-9acfefb42a33</wml_space_id>
+				<wml_space_id>MY_SPACE_ID</wml_space_id>
+				<wml_deployment_size>S</wml_deployment_size>
+			</properties>
+		</profile>
+		<profile>
+			<id>wml_test_environment_cp4d</id>
+			<!-- https://www.ibm.com/docs/en/cloud-paks/cp-data/4.7.x?topic=deployments-authenticating-programmatic-access#outside-auth -->
+			<properties>
+				<wml_location>CP4D_WML_CLUSTER</wml_location>
+				<wml_username>MY_USERNAME</wml_username>
+				<wml_password>MY_PASSOWRD</wml_password>
+				<wml_space_id>MY_SPACE_ID</wml_space_id>
 				<wml_deployment_size>S</wml_deployment_size>
 			</properties>
 		</profile>
 	</profiles>
  ```
-  - Now you can execute the commands `mvn -P wml_test_environment_cloud verify` or `mvn -P wml_test_environment_cloud install` in your project.
+  - Now you can execute the commands `mvn -P <profile_name> verify` or `mvn -P <profile_name> install` in your project, where `<profile_name>` is `wml_test_environment_cloud` or `wml_test_environment_cp4d`.
  
 
  

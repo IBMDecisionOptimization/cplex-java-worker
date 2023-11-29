@@ -162,6 +162,7 @@
 	<profiles>
 		<profile>
 			<id>wml_test_environment_cloud</id>
+			<!-- https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-authentication.html?context=cpdaas -->
 			<properties>
 				<wml_location>CLOUD_WML_CLUSTER</wml_location>
 				<wml_api_key>MY_APY_KEY</wml_api_key>
@@ -169,9 +170,9 @@
 				<wml_deployment_size>S</wml_deployment_size>
 			</properties>
 		</profile>
-		<!--https://www.ibm.com/docs/en/cloud-paks/cp-data/4.7.x?topic=deployments-authenticating-programmatic-access#outside-auth-->
 		<profile>
 			<id>wml_test_environment_cp4d</id>
+			<!-- https://www.ibm.com/docs/en/cloud-paks/cp-data/4.7.x?topic=deployments-authenticating-programmatic-access#outside-auth -->
 			<properties>
 				<wml_location>CP4D_WML_CLUSTER</wml_location>
 				<wml_username>MY_USERNAME</wml_username>

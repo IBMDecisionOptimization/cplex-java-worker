@@ -37,7 +37,7 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--tsize", help="WML deployment tshirt size", default="S")
     parser.add_argument("-c", "--config", help="WML deployments config")
     parser.add_argument(
-        "-v", "--version", help="Decision Optimization version", default="20.1"
+        "-v", "--version", help="Decision Optimization version", default="22.1"
     )
     parser.add_argument(
         "-w", "--worker_class", help="Decision Optimization worker class"
