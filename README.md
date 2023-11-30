@@ -42,7 +42,7 @@ If you want to verify the deployment to a Watson Machine Learning cluster, you m
 		</profile>
 		<profile>
 			<id>wml_test_environment_cp4d</id>
-			<!-- https://www.ibm.com/docs/en/cloud-paks/cp-data/4.7.x?topic=deployments-authenticating-programmatic-access#outside-auth -->
+			<!-- https://www.ibm.com/docs/en/cloud-paks/cp-data/4.8.x?topic=deployments-authenticating-programmatic-access -->
 			<properties>
 				<wml_location>CP4D_WML_CLUSTER</wml_location>
 				<wml_username>MY_USERNAME</wml_username>
