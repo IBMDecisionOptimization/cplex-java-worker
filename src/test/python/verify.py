@@ -5,7 +5,7 @@ import sys
 from os.path import exists
 from time import sleep
 
-from ibm_watson_machine_learning import APIClient
+from ibm_watsonx_ai import APIClient, Credentials
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -47,17 +47,16 @@ if __name__ == "__main__":
     else:
         sys.exit("WML deployments config file does not exist")
 
-    wml_credentials = {"url": "https://" + config[args.name]["location"]}
+    wml_credentials = Credentials(url = "https://" + config[args.name]["location"])
     if args.api_key is not None:
-        wml_credentials["apikey"] = args.api_key
+        wml_credentials.api_key = args.api_key
     else:
-        wml_credentials["username"] = args.username
-        wml_credentials["password"] = args.password
-        wml_credentials["instance_id"] = "openshift"
-        wml_credentials["version"] = "4.0"
+        wml_credentials.username = args.username
+        wml_credentials.password = args.password
+        wml_credentials.instance_id = "openshift"
+        wml_credentials.version = "5.0"
 
-    client = APIClient(wml_credentials)
-    client.set.default_space(config[args.name]["space_id"])
+    client = APIClient(wml_credentials, space_id = config[args.name]["space_id"])
 
     default_solve_parameters = {"oaas.logAttachmentName": "log.txt"}
     if args.worker_class is not None:
@@ -73,7 +72,7 @@ if __name__ == "__main__":
     job_details = client.deployments.create_job(
         config[args.name]["deployment_uid"], solve_payload
     )
-    job_uid = client.deployments.get_job_uid(job_details)
+    job_uid = client.deployments.get_job_id(job_details)
     while job_details["entity"]["decision_optimization"]["status"]["state"] not in [
         "completed",
         "failed",

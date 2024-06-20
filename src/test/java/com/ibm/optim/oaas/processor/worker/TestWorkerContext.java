@@ -137,6 +137,13 @@ public class TestWorkerContext implements IWorkerContext {
   }
 
   @Override
+  public void setOutputAttachmentFiles(Map<String, File> attachments) throws ProcessorException {
+
+    outputAttachments.putAll(attachments);
+
+  }
+
+  @Override
   public File getTempDir() {
 
     return tempDir.toFile();

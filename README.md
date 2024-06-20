@@ -6,10 +6,10 @@ This project demonstrates the development, testing, deployment and verification 
 * Cloud Pak for Data 4.8.x or later.
 
 ## 1. Install the development environment:
-  - [Install JAVA 11 JDK](https://developer.ibm.com/languages/java/semeru-runtimes/downloads).
+  - [Install JAVA 17 JDK](https://developer.ibm.com/languages/java/semeru-runtimes/downloads).
   - [Install Apache Maven](https://maven.apache.org/install.html) for mvn command.
   - [Install Conda or any Python](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) and add the Python executable file name to your PATH.
-  - [Install IBM Watson Machine Learning Python client](https://ibm.github.io/watson-machine-learning-sdk/install.html) with `pip install ibm-watson-machine-learning`.
+  - [Install IBM watsonx.ai Python client](https://ibm.github.io/watsonx-ai-python-sdk/install.html) with `pip install ibm-watsonx-ai`.
   - [Install IBM ILOG CPLEX Optimization Studio](https://www.ibm.com/products/ilog-cplex-optimization-studio) (The compilation and modeling can be done with the [Community Edition of CPLEX](https://www.ibm.com/account/reg/us-en/signup?formid=urx-20028) that is freely available.)
 
 ## 2. Set up the development environment:
@@ -27,12 +27,11 @@ mvn install:install-file "-Dfile=%CPLEX_STUDIO_DIR%\cpoptimizer\lib\ILOG.CP.jar"
 
 ## 3. Set up your integration test environment:
 If you want to verify the deployment to a Watson Machine Learning cluster, you must specify the Watson Machine Learning environment that you want to target during your tests.
-  - Update the profiles in your pom.xml or settings.xml file for your needs:
+  - Update the profiles in your pom.xml or settings.xml file for your needs ([environment authentication details](https://ibm.github.io/watsonx-ai-python-sdk/setup.html)):
 ```
 	<profiles>
 		<profile>
 			<id>wml_test_environment_cloud</id>
-			<!-- https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-authentication.html?context=cpdaas -->
 			<properties>
 				<wml_location>CLOUD_WML_CLUSTER</wml_location>
 				<wml_api_key>MY_APY_KEY</wml_api_key>
@@ -42,7 +41,6 @@ If you want to verify the deployment to a Watson Machine Learning cluster, you m
 		</profile>
 		<profile>
 			<id>wml_test_environment_cp4d</id>
-			<!-- https://www.ibm.com/docs/en/cloud-paks/cp-data/4.8.x?topic=deployments-authenticating-programmatic-access -->
 			<properties>
 				<wml_location>CP4D_WML_CLUSTER</wml_location>
 				<wml_username>MY_USERNAME</wml_username>

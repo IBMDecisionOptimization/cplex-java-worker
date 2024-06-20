@@ -2,7 +2,7 @@ import argparse
 import configparser
 from os.path import exists
 
-from ibm_watson_machine_learning import APIClient
+from ibm_watsonx_ai import APIClient, Credentials
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Java worker deploy in WML server")
@@ -58,18 +58,15 @@ if __name__ == "__main__":
                     + " already present in config deleting them..."
                 )
                 try:
-                    wml_credentials = {
-                        "url": "https://" + config[args.name]["location"]
-                    }
+                    wml_credentials = Credentials(url = "https://" + config[args.name]["location"])
                     if args.api_key is not None:
-                        wml_credentials["apikey"] = args.api_key
+                        wml_credentials.api_key = args.api_key
                     else:
-                        wml_credentials["username"] = args.username
-                        wml_credentials["password"] = args.password
-                        wml_credentials["instance_id"] = "openshift"
-                        wml_credentials["version"] = "4.0"
-                    client = APIClient(wml_credentials)
-                    client.set.default_space(config[args.name]["space_id"])
+                        wml_credentials.username = args.username
+                        wml_credentials.password = args.password
+                        wml_credentials.instance_id = "openshift"
+                        wml_credentials.version = "5.0"
+                    client = APIClient(wml_credentials, space_id = config[args.name]["space_id"])
                     client.deployments.delete(config[args.name]["deployment_uid"])
                     client.repository.delete(config[args.name]["model_uid"])
                 except:
@@ -77,16 +74,15 @@ if __name__ == "__main__":
                 finally:
                     config.remove_section(args.name)
 
-    wml_credentials = {"url": "https://" + args.location}
+    wml_credentials = Credentials(url = "https://" + args.location)
     if args.api_key is not None:
-        wml_credentials["apikey"] = args.api_key
+        wml_credentials.api_key = args.api_key
     else:
-        wml_credentials["username"] = args.username
-        wml_credentials["password"] = args.password
-        wml_credentials["instance_id"] = "openshift"
-        wml_credentials["version"] = "4.0"
-    client = APIClient(wml_credentials)
-    client.set.default_space(args.space_id)
+        wml_credentials.username = args.username
+        wml_credentials.password = args.password
+        wml_credentials.instance_id = "openshift"
+        wml_credentials.version = "5.0"
+    client = APIClient(wml_credentials, space_id = args.space_id)
 
     # Allows to define default job settings
     default_solve_parameters = {
@@ -101,7 +97,7 @@ if __name__ == "__main__":
         client.repository.ModelMetaNames.NAME: args.name,
         client.repository.ModelMetaNames.DESCRIPTION: args.name + " model",
         client.repository.ModelMetaNames.TYPE: "do-cplex_" + args.version,
-        client.repository.ModelMetaNames.SOFTWARE_SPEC_UID: client.software_specifications.get_uid_by_name(
+        client.repository.ModelMetaNames.SOFTWARE_SPEC_ID: client.software_specifications.get_id_by_name(
             "do_" + args.version
         ),
         client.repository.ModelMetaNames.CUSTOM: default_solve_parameters,
@@ -124,7 +120,7 @@ if __name__ == "__main__":
     }
 
     deployment_details = client.deployments.create(model_uid, meta_props=meta_props)
-    deployment_uid = client.deployments.get_uid(deployment_details)
+    deployment_uid = client.deployments.get_id(deployment_details)
 
     print("deployment_uid: " + deployment_uid)
 
